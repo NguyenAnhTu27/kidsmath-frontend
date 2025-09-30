@@ -1,11 +1,24 @@
 import { useState } from 'react'
+import http from '../../../libs/http'
 import useAuthStore from '../../../store/authStore'
-
+import { useNavigate } from 'react-router-dom'
 
 export default function Login() {
-    const [form, setForm] = useState({ username: '', password: '', role: 'parent' })
+    const [form, setForm] = useState({ username: '', password: '' })
+    const [err, setErr] = useState('')
     const { login } = useAuthStore()
-    const onSubmit = async (e) => { e.preventDefault(); await login(form) }
+    const navigate = useNavigate()
+
+
+    const onSubmit = async (e) => {
+        e.preventDefault(); setErr('')
+        try {
+            const { data } = await http.post('/auth/login', form)
+            localStorage.setItem('token', data.accessToken)
+            await login({ username: data.user.username, role: data.user.role })
+            navigate('/parent', { replace: true })  // or redirect by role (important)
+        } catch (e) { setErr(e?.response?.data?.message || e.message) }
+    }
     return (
         <div className="max-w-md mx-auto card">
             <h2 className="text-xl font-bold mb-3">Đăng nhập</h2>

@@ -1,7 +1,27 @@
 import { useState } from 'react'
+import http from '../../../libs/http'
 export default function Register() {
     const [form, setForm] = useState({ fullname: '', phone: '', email: '', username: '', password: '' })
-    const onSubmit = (e) => { e.preventDefault(); alert('Registered (mock)') }
+    const [loading, setLoading] = useState(false)
+    const [err, setErr] = useState('')
+
+
+    const onSubmit = async (e) => {
+        e.preventDefault(); setErr(''); setLoading(true)
+        try {
+            await http.post('/auth/register', {
+                fullName: form.fullname,
+                phone: form.phone,
+                email: form.email,
+                username: form.username,
+                password: form.password,
+                role: 'parent',
+            })
+            alert('Đăng ký thành công!'); window.location.href = '/login'
+        } catch (e) {
+            setErr(e?.response?.data?.message || e.message)
+        } finally { setLoading(false) }
+    }
     return (
         <div className="max-w-md mx-auto card">
             <h2 className="text-xl font-bold mb-3">Đăng ký (Parent)</h2>

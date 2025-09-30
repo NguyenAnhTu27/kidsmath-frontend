@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import RootLayout from '../layouts/RootLayout'
+import GuestLayout from '../layouts/GuestLayout'
 import ParentLayout from '../layouts/ParentLayout'
 import StudentLayout from '../layouts/StudentLayout'
 import TeacherLayout from '../layouts/TeacherLayout'
@@ -38,11 +39,15 @@ export const router = createBrowserRouter([
         path: '/',
         element: <RootLayout />,
         children: [
-            { index: true, element: <Home /> },
-            { path: 'login', element: <Login /> },
-            { path: 'register', element: <Register /> },
+            {
+                element: <GuestLayout />,
+                children: [
+                    { index: true, element: <Home /> },
+                    { path: 'login', element: <Login /> },
+                    { path: 'register', element: <Register /> },
 
-
+                ],
+            },
             {
                 path: 'parent',
                 element: (
