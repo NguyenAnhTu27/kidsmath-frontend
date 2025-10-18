@@ -49,12 +49,15 @@ export const router = createBrowserRouter([
                 ],
             },
             {
+                // path: 'parent',
+                // element: (
+                //     <Guard roles={["parent"]}>
+                //         <ParentLayout />
+                //     </Guard>
+                // ),
+
                 path: 'parent',
-                element: (
-                    <Guard roles={["parent"]}>
-                        <ParentLayout />
-                    </Guard>
-                ),
+                element: <ParentLayout />, // ✅ Bỏ Guard, vào thẳng
                 children: [
                     { index: true, element: <ParentDashboard /> },
                     { path: 'courses', element: <Courses /> },

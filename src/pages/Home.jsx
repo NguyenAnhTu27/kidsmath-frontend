@@ -1,12 +1,21 @@
-import Navbar from '../components/ui/Navbar'
+import { useState } from 'react'
+import { NavLink } from 'react-router-dom'
+// import Navbar from '../components/ui/Navbar'
 import LeftPicture from '../assets/leftMath.png'
 import { motion } from "framer-motion";
 import FloatingMathBG from "../components/ui/FloatingMathBG";
+// 
+import { useNavigate } from 'react-router-dom'
+
+
 const fadeUp = {
     initial: { opacity: 0, y: 24 },
     animate: { opacity: 1, y: 0 },
 };
 export default function Home() {
+    // const navigate = useNavigate()
+    const [loginType, setLoginType] = useState('student') // 'student' | 'admin' | 'parent' | 'teacher'
+
     return (
 
 
@@ -66,26 +75,30 @@ export default function Home() {
                                 animate="animate"
                                 transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
                             >
-                                <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-                                    <CTAButton>Người học</CTAButton>
-                                </motion.div>
-
-                                <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-                                    <CTAButton variant="outline">Giáo viên</CTAButton>
-                                </motion.div>
-
+                                <NavLink to="/login?type=student" state={{ preselect: 'student' }}>
+                                    <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                                        <CTAButton>Người học</CTAButton>
+                                    </motion.div>
+                                </NavLink>
+                                <NavLink to="/login?type=teacher" state={{ preselect: 'teacher' }}>
+                                    <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                                        <CTAButton variant="outline">Giáo viên</CTAButton>
+                                    </motion.div>
+                                </NavLink>
                                 <motion.div
                                     whileHover={{ scale: 1.03 }}
                                     whileTap={{ scale: 0.98 }}
                                 >
-                                    <CTAButton variant="soft">Cha mẹ</CTAButton>
+                                    <NavLink to="/login?type=parent" state={{ preselect: 'parent' }}>
+                                        <CTAButton variant="soft">Cha mẹ</CTAButton>
+                                    </NavLink>
                                 </motion.div>
                             </motion.div>
                         </div>
                     </div>
                 </section>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
 

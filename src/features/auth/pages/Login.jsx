@@ -1,12 +1,17 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import http from '../../../libs/http'
 import useAuthStore from '../../../store/authStore'
 import { useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, ArrowLeft, Mail, Lock, UserCheck, Shield } from 'lucide-react'
 
 export default function Login() {
-    const [loginType, setLoginType] = useState('student') // 'student' | 'admin' | 'parent' | 'teacher'
+    const location = useLocation()
+    const initialLoginType = location.state?.preselect || 'student' // fallback if nothing passed
+    const [loginType, setLoginType] = useState(initialLoginType)
+
     const [showPassword, setShowPassword] = useState(false)
+    const [email, setEmail] = useState('');
     const [form, setForm] = useState({ username: '', password: '' })
     const [isLoading, setIsLoading] = useState(false)
     const [err, setErr] = useState('')
@@ -66,9 +71,6 @@ export default function Login() {
 
                     {/* Right: Login Card */}
                     <div className="w-full max-w-md mx-auto">
-                        {/* Logo */}
-
-
                         {/* Role selector */}
                         <div className="flex mb-6 p-1 bg-gray-100 rounded-lg">
                             {[
@@ -116,22 +118,23 @@ export default function Login() {
                                 <form onSubmit={onSubmit} className="space-y-4">
                                     {/* Username (hoặc Email nếu backend dùng email) */}
                                     <div className="space-y-2">
-                                        <label htmlFor="username" className="text-sm font-medium text-gray-700">
-                                            Tên đăng nhập
+                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                            Email
                                         </label>
                                         <div className="relative">
-                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                                             <input
-                                                id="username"
-                                                type="text"
-                                                placeholder="Nhập tên đăng nhập"
-                                                value={form.username}
-                                                onChange={(e) => setForm((f) => ({ ...f, username: e.target.value }))}
-                                                className="pl-10 w-full px-3 py-2 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition"
+                                                id="email"
+                                                type="email"
+                                                placeholder="Nhập email của bạn"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                                                 required
                                             />
                                         </div>
                                     </div>
+
 
                                     {/* Password */}
                                     <div className="space-y-2">
