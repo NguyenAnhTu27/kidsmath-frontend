@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import { useState } from "react"
 import useAuthStore from "../../store/authStore"
 import { motion, AnimatePresence } from "framer-motion"
+import { Menu, X } from "lucide-react"
 
 const MotionLink = motion(Link)
 
@@ -13,6 +14,7 @@ const fadeDown = {
 export default function Navbar() {
     const { user, logout } = useAuthStore()
     const [search, setSearch] = useState("")
+    const [isMenuOpen, setIsMenuOpen] = useState(false) // mobile menu state
 
     return (
         <motion.header
@@ -78,13 +80,49 @@ export default function Navbar() {
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 placeholder="Tìm khóa học..."
-                                className="pl-10 w-40 md:w-56 lg:w-72 px-3 py-2 border border-gray-300 rounded-full focus:w-96 transition-all duration-500 ease-in-out outline-none shadow-sm focus:shadow-md"
+                                className="pl-10 w-40 md:w-56 lg:w-72 px-3 py-2 border border-gray-300 rounded-full focus:w-96  transition-all duration-500 ease-in-out outline-none shadow-sm focus:shadow-md"
                                 whileFocus={{ boxShadow: "0 6px 20px rgba(24,101,242,0.15)" }}
                             />
                         </div>
                     </motion.div>
 
-                    {/* Auth */}
+                    {/* Mobile menu button (added) */}
+                    <div className="md:hidden">
+                        <motion.button
+                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                            onClick={() => setIsMenuOpen((v) => !v)}
+                            aria-expanded={isMenuOpen}
+                            aria-controls="mobile-menu"
+                            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            <AnimatePresence mode="wait">
+                                {isMenuOpen ? (
+                                    <motion.div
+                                        key="close"
+                                        initial={{ opacity: 0, rotate: -90 }}
+                                        animate={{ opacity: 1, rotate: 0 }}
+                                        exit={{ opacity: 0, rotate: 90 }}
+                                        transition={{ duration: 0.18 }}
+                                    >
+                                        <X className="h-6 w-6" />
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        key="menu"
+                                        initial={{ opacity: 0, rotate: 90 }}
+                                        animate={{ opacity: 1, rotate: 0 }}
+                                        exit={{ opacity: 0, rotate: -90 }}
+                                        transition={{ duration: 0.18 }}
+                                    >
+                                        <Menu className="h-6 w-6" />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </motion.button>
+                    </div>
+
+                    {/* Auth (desktop) */}
                     <AnimatePresence initial={false} mode="wait">
                         {!user ? (
                             <motion.nav
@@ -92,7 +130,7 @@ export default function Navbar() {
                                 initial={{ opacity: 0, y: -6 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -6 }}
-                                className="flex items-center gap-4"
+                                className="hidden md:flex items-center gap-4"
                             >
                                 <MotionLink
                                     to="/login"
@@ -118,7 +156,7 @@ export default function Navbar() {
                                 initial={{ opacity: 0, y: -6 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -6 }}
-                                className="flex items-center gap-4"
+                                className="hidden md:flex items-center gap-4"
                             >
                                 <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-gray-600">
                                     {user.role}: {user.username}
@@ -136,6 +174,71 @@ export default function Navbar() {
                     </AnimatePresence>
 
                 </div>
+
+                {/* Mobile navigation panel (added) */}
+                <AnimatePresence>
+                    {isMenuOpen && (
+                        <motion.div
+                            id="mobile-menu"
+                            className="md:hidden border-t border-gray-200 bg-white"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.28 }}
+                        >
+                            <nav className="flex flex-col p-4 space-y-2" role="menu" aria-label="Mobile">
+                                {[
+                                    "Trang chủ",
+                                    "Khóa học",
+                                    "Bài tập",
+                                    "Về chúng tôi",
+                                ].map((item, idx) => (
+                                    <a
+                                        key={item}
+                                        href="#"
+                                        role="menuitem"
+                                        tabIndex={0}
+                                        className={`px-3 py-2 rounded-md transition-colors ${idx === 0 ? "text-gray-900 hover:text-blue-600" : "text-gray-700 hover:text-blue-600"
+                                            }`}
+                                    >
+                                        {item}
+                                    </a>
+                                ))}
+
+                                <div className="pt-3 flex flex-col gap-2">
+                                    {!user ? (
+                                        <>
+                                            <a
+                                                href="/login"
+                                                className="w-full inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 text-gray-700 bg-transparent border"
+                                            >
+                                                Đăng nhập
+                                            </a>
+                                            <a
+                                                href="/register"
+                                                className="w-full inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 text-white bg-[#1865F2]"
+                                            >
+                                                Đăng ký
+                                            </a>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="text-sm text-gray-700 px-3">
+                                                {user.role}: {user.username}
+                                            </div>
+                                            <button
+                                                onClick={logout}
+                                                className="w-full inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 text-gray-700 bg-transparent border"
+                                            >
+                                                Logout
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            </nav>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </motion.header>
     )

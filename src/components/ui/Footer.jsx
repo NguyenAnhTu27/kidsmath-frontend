@@ -27,7 +27,7 @@ export function Footer() {
             transition={{ duration: 0.4 }}
         >
             <motion.div
-                className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
+                className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 "
                 variants={container}
                 initial="hidden"
                 whileInView="show"

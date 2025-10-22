@@ -16,6 +16,8 @@ import Courses from '../features/parent/pages/Courses'
 import Purchase from '../features/parent/pages/Purchase'
 import AssignCourse from '../features/parent/pages/AssignCourse'
 import TrackProgress from '../features/parent/pages/TrackProgress'
+import Assignments from '../features/parent/pages/Assignments'
+import Settings from '../features/parent/pages/Settings'
 
 
 import StudentDashboard from '../features/student/pages/StudentDashboard'
@@ -64,6 +66,8 @@ export const router = createBrowserRouter([
                     { path: 'purchase', element: <Purchase /> },
                     { path: 'assign', element: <AssignCourse /> },
                     { path: 'progress', element: <TrackProgress /> },
+                    { path: 'assignments', element: <Assignments /> },
+                    { path: 'settings', element: <Settings /> },
                 ],
             },
 
